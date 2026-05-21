@@ -1,11 +1,13 @@
 {
-  "name": "cafe-backend",
+  "name": "cafe-backend-scaf",
   "version": "1.0.0",
-  "description": "Servidor de control para el procesado de cafe",
+  "description": "Servidor API en Node.js para el control y trazabilidad de cacaos y cafés especiales.",
   "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
-    "express": "^4.17.1",
-    "pg": "^8.5.1",
-    "cors": "^2.8.5"
+    "@supabase/supabase-js": "^2.39.0",
+    "dotenv": "^16.4.5"
   }
 }
