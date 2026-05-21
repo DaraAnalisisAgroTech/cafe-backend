@@ -1,3 +1,4 @@
+// Ensayo de inserción de lote - Conexión Supabase)
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 
