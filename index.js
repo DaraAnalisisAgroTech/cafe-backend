@@ -1,36 +1,37 @@
-// Ensayo de inserción de lote - Conexión Supabase)
+const express = require('express');
+const { createClient } = require('@supabase/supabase-client');
 require('dotenv').config();
-const { createClient } = require('@supabase/supabase-js');
+
+const app = express();
+app.use(express.json());
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const primerLote = {
-    codigo_lote: 'LOTE-CAFE-MERIDA-001',
-    grados_brix: 24.50,
-    tipo_fermentacion: 'Anaeróbica Extendida (72h)',
-    ph_final: 4.20,
-    temperatura_max: 36.8,
-    tipo_secado: 'Camas Africanas Bajo Sombra',
-    humedad_final: 11.5,
-    dictamen_agronomico: 'APROBADO'
-};
+// Ruta base de prueba para verificar que el sistema está vivo
+app.get('/', (req, res) => {
+  res.send('Servidor del Café GICE Tech corriendo exitosamente.');
+});
 
-async function registrarPrimerLote() {
-    console.log('⏳ Iniciando transferencia de datos hacia Supabase desde la nube...');
+// Ruta corregida para insertar los lotes de café
+app.post('/api/cafe', async (req, res) => {
+  try {
+    const { lote, variedad, kilos, estado } = req.body;
     
     const { data, error } = await supabase
-        .from('trazabilidad_cafe')
-        .insert([primerLote])
-        .select();
+      .from('lotes_cafe')
+      .insert([{ lote, variedad, kilos, estado }]);
 
-    if (error) {
-        console.error('🔴 Error crítico en la inserción:', error.message);
-    } else {
-        console.log('🟢 ¡ÉXITO TOTAL! Primer lote registrado en Supabase exitosamente.');
-        console.log('Datos confirmados:', data);
-    }
-}
+    if (error) throw error;
 
-registrarPrimerLote();
+    res.status(201).json({ mensaje: 'Lote registrado con éxito', data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
+});
